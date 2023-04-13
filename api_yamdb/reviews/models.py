@@ -29,7 +29,6 @@ class Title(models.Model):
     description = models.TextField(
         'Описание',
         blank=True,
-        null=True,
     )
 
     category = models.ForeignKey(
