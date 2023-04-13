@@ -105,7 +105,7 @@ class Review(models.Model):
         )]
 
     def __str__(self):
-        return self.text[settings.NUMBER_VISIBLE_SYMBL]
+        return self.text[:settings.NUMBER_VISIBLE_SYMBL]
 
 
 class Comment(models.Model):
@@ -126,4 +126,4 @@ class Comment(models.Model):
         verbose_name_plural = 'Комментарии'
 
     def __str__(self):
-        return self.text[settings.NUMBER_VISIBLE_SYMBL]
+        return self.text[:settings.NUMBER_VISIBLE_SYMBL]

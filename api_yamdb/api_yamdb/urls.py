@@ -19,7 +19,6 @@ from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('admin1/', admin.site.urls),
     path(
         'redoc/',
         TemplateView.as_view(template_name='redoc.html'),
