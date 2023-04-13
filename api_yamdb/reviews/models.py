@@ -5,12 +5,13 @@ from django.conf import settings
 class Category(models.Model):
     name = models.CharField(
         'Название категории',
-        max_length=50,
+        max_length=256,
         unique=True,
     )
 
     slug = models.SlugField(
         'Слаг категории',
+        max_length=50,
         unique=True,
     )
 
@@ -18,11 +19,17 @@ class Category(models.Model):
 class Title(models.Model):
     name = models.CharField(
         'Название произведения',
-        max_length=200,
+        max_length=256,
     )
 
     year = models.IntegerField(
         'Год выпуска',
+    )
+
+    description = models.TextField(
+        'Описание',
+        blank=True,
+        null=True,
     )
 
     category = models.ForeignKey(
@@ -42,12 +49,13 @@ class Title(models.Model):
 class Genre(models.Model):
     name = models.CharField(
         'Название жанра',
-        max_length=50,
+        max_length=256,
         unique=True,
     )
 
     slug = models.SlugField(
         'Слаг жанра',
+        max_length=50,
         unique=True,
     )
 
