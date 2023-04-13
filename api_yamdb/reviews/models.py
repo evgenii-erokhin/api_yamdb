@@ -16,6 +16,24 @@ class Category(models.Model):
     )
 
 
+class Genre(models.Model):
+    name = models.CharField(
+        'Название жанра',
+        max_length=256,
+        unique=True,
+    )
+
+    slug = models.SlugField(
+        'Слаг жанра',
+        max_length=50,
+        unique=True,
+    )
+
+    class Meta:
+        verbose_name = 'Жанр'
+        verbose_name_plural = 'Жанры'
+
+
 class Title(models.Model):
     name = models.CharField(
         'Название произведения',
@@ -39,41 +57,23 @@ class Title(models.Model):
         verbose_name='Категория произведения',
     )
 
+    genre = models.ManyToManyField(Genre, through='GenreTitle')
+
     class Meta:
         default_related_name = 'titles'
         verbose_name = 'Произведение'
         verbose_name_plural = 'Произведения'
 
 
-class Genre(models.Model):
-    name = models.CharField(
-        'Название жанра',
-        max_length=256,
-        unique=True,
-    )
-
-    slug = models.SlugField(
-        'Слаг жанра',
-        max_length=50,
-        unique=True,
-    )
-
-    class Meta:
-        verbose_name = 'Жанр'
-        verbose_name_plural = 'Жанры'
-
-
-class GenreTitle:
+class GenreTitle(models.Model):
     title_id = models.ForeignKey(
         Title,
         on_delete=models.CASCADE,
-        related_name='genres',
     )
 
     genre_id = models.ForeignKey(
-        Title,
+        Genre,
         on_delete=models.CASCADE,
-        related_name='titles',
     )
 
     class Meta:
