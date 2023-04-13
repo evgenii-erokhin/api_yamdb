@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 
 class Category(models.Model):
@@ -75,3 +76,54 @@ class GenreTitle:
                 name='unique_genre_to_title',
             )
         ]
+
+
+class Review(models.Model):
+    '''Модель отзывов'''
+    author = models.IntegerField()
+
+    text = models.TextField(max_length=3000,
+                            verbose_name='Текст отзыва',
+                            help_text='Введите текст отзыва')
+
+    score = models.IntegerField(verbose_name='Оценка произведения',
+                                help_text='Укажите оценку произведения')
+
+    title = models.ForeignKey(Title,
+                              on_delete=models.CASCADE,
+                              related_name='reviews',
+                              verbose_name='Отзыв произведения',
+                              )
+    pub_date = models.DateTimeField(verbose_name='Дата отзыва',
+                                    auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Отзыв'
+        verbose_name_plural = 'Отзывы'
+        constraints = [models.UniqueConstraint(
+            fields=['author', 'title'], name='unique_author_title'
+        )]
+
+    def __str__(self):
+        return self.text[:settings.NUMBER_VISIBLE_SYMBL]
+
+
+class Comment(models.Model):
+    '''Модель комментариев'''
+    author = models.IntegerField()
+    text = models.TextField(max_length=1000,
+                            verbose_name='Текст комментария',
+                            help_text='Оставьте комментарий')
+    review = models.ForeignKey(Review,
+                               on_delete=models.CASCADE,
+                               related_name='comments',
+                               verbose_name='Комментарий к отзыву')
+    pub_date = models.DateTimeField(verbose_name='Дата комментария',
+                                    auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
+
+    def __str__(self):
+        return self.text[:settings.NUMBER_VISIBLE_SYMBL]
