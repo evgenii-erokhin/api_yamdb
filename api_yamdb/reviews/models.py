@@ -1,28 +1,52 @@
-from django.db import models
 from django.conf import settings
+from django.db import models
 
 
 class Category(models.Model):
     name = models.CharField(
         'Название категории',
-        max_length=50,
+        max_length=256,
         unique=True,
     )
 
     slug = models.SlugField(
         'Слаг категории',
+        max_length=50,
         unique=True,
     )
+
+
+class Genre(models.Model):
+    name = models.CharField(
+        'Название жанра',
+        max_length=256,
+        unique=True,
+    )
+
+    slug = models.SlugField(
+        'Слаг жанра',
+        max_length=50,
+        unique=True,
+    )
+
+    class Meta:
+        verbose_name = 'Жанр'
+        verbose_name_plural = 'Жанры'
 
 
 class Title(models.Model):
     name = models.CharField(
         'Название произведения',
-        max_length=200,
+        max_length=256,
     )
 
     year = models.IntegerField(
         'Год выпуска',
+    )
+
+    description = models.TextField(
+        'Описание',
+        blank=True,
     )
 
     category = models.ForeignKey(
@@ -33,40 +57,23 @@ class Title(models.Model):
         verbose_name='Категория произведения',
     )
 
+    genre = models.ManyToManyField(Genre, through='GenreTitle')
+
     class Meta:
         default_related_name = 'titles'
         verbose_name = 'Произведение'
         verbose_name_plural = 'Произведения'
 
 
-class Genre(models.Model):
-    name = models.CharField(
-        'Название жанра',
-        max_length=50,
-        unique=True,
-    )
-
-    slug = models.SlugField(
-        'Слаг жанра',
-        unique=True,
-    )
-
-    class Meta:
-        verbose_name = 'Жанр'
-        verbose_name_plural = 'Жанры'
-
-
-class GenreTitle:
+class GenreTitle(models.Model):
     title_id = models.ForeignKey(
         Title,
         on_delete=models.CASCADE,
-        related_name='genres',
     )
 
     genre_id = models.ForeignKey(
-        Title,
+        Genre,
         on_delete=models.CASCADE,
-        related_name='titles',
     )
 
     class Meta:
