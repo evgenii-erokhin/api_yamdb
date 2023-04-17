@@ -16,6 +16,9 @@ class Category(models.Model):
         unique=True,
     )
 
+    class Meta:
+        ordering = ('slug',)
+
 
 class Genre(models.Model):
     name = models.CharField(
@@ -31,6 +34,7 @@ class Genre(models.Model):
     )
 
     class Meta:
+        ordering = ('slug',)
         verbose_name = 'Жанр'
         verbose_name_plural = 'Жанры'
 
@@ -61,6 +65,7 @@ class Title(models.Model):
     genre = models.ManyToManyField(Genre, through='GenreTitle')
 
     class Meta:
+        ordering = ('year', 'name')
         default_related_name = 'titles'
         verbose_name = 'Произведение'
         verbose_name_plural = 'Произведения'

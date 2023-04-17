@@ -109,6 +109,7 @@ NUMBER_VISIBLE_SYMBL = 50
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 100,
 }
 
 # Custom user model
