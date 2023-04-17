@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class Category(models.Model):
@@ -93,8 +94,12 @@ class Review(models.Model):
                             verbose_name='Текст отзыва',
                             help_text='Введите текст отзыва')
 
-    score = models.IntegerField(verbose_name='Оценка произведения',
-                                help_text='Укажите оценку произведения')
+    score = models.PositiveSmallIntegerField(
+        verbose_name='Оценка произведения',
+        help_text='Укажите оценку произведения',
+        validators=[MinValueValidator(1, 'Оценка не может быть меньше 1-го'),
+                    MaxValueValidator(10, 'Оценка не может быть боьше 10-ти')]
+    )
 
     title = models.ForeignKey(Title,
                               on_delete=models.CASCADE,
