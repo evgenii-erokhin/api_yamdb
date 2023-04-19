@@ -1,24 +1,31 @@
-# Групповой учебный проект: написние API для веб-приложения -- YaMDb.
+# Групповой учебный проект: написние REST API для веб-приложения: YaMDb.
 
-Проект реализует API сервиса
+## Описание:
+Данный сервис собирает отзывы и оценки пользователей на произведения.
+Произведения делятся на категории: "Книги", "Фильмы", "Музыка". Список категорий может быть расширен администратором.
+Пользователи могут оставить текстовый отзыв и оценку произведению, в диапазоне от одного до десяти. Из пользовательских оценок формируется средняя оценка.
+
+Перечень запросов к ресурсу можно посмотреть в описании API после настройки и запуска проекта.
+`http://127.0.0.1:8000/redoc/`
+
+
+
 ## Как запустить проект:
-+ Клонировать репозиторий и перейти в него в командной строке:
-```git clone git@github.com:evgenii-erokhin/api_final_yatube.git```
-
-   `cd api_final_yatube`
++ Клонировать репозиторий:
+    ```git clone git@github.com:evgenii-erokhin/api_yamdb.git```
 
 + Cоздать и активировать виртуальное окружение:
-    `python -m venv venv`
-
-  `source venv/Scripts/activate`
+  `python3 -m venv venv`
+  `source venv/bin/activate`
 
 + Установить зависимости из файла requirements.txt:
-`pip install -r requirements.txt`
+  `python3 -m pip install --upgrade pip`
+  `pip install -r requirements.txt`
 
 + Выполнить миграции:
-`python manage.py migrate`
+  `python3 manage.py migrate`
 + Запустить проект:
-`python manage.py runserver`
+  `python3 manage.py runserver`
 
-### Автор
-Evgenii Erokhin
+### Авторы:
+Групповой учебный проект выполнили: Фованов Дмитрий, Борисенко Дмитрий, Ерохин Евгений.
