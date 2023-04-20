@@ -12,9 +12,7 @@ class HashableDict(dict):
 
 class SlugInDictOutField(serializers.SlugRelatedField):
     def to_representation(self, obj):
-        response = HashableDict()
-        response.update(model_to_dict(obj, fields=('name', 'slug')))
-        return response
+        return HashableDict(model_to_dict(obj, fields=('name', 'slug')))
 
 
 class CategorySerializer(serializers.ModelSerializer):
