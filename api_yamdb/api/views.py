@@ -1,11 +1,12 @@
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, viewsets
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
+from api.permissions import IsAdminOrAuthor
 from api.serializers import (CategorySerializer, CommentSerializer,
                              GenreSerializer, ReviewSerializer,
                              TitleSerializer)
-from api.permissions import IsAdminOrAuthor
 from reviews.models import Category, Genre, Review, Title
 
 
@@ -19,14 +20,15 @@ class CategoryViewSet(viewsets.ModelViewSet):
 class GenreViewSet(viewsets.ModelViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
+    filter_backends = (DjangoFilterBackend,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
 
 
 class TitleViewSet(viewsets.ModelViewSet):
     serializer_class = TitleSerializer
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ('name', 'year')
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ('name', 'year')
 
     def get_queryset(self):
         queryset = Title.objects.all()
@@ -37,7 +39,7 @@ class TitleViewSet(viewsets.ModelViewSet):
 
         genre = self.request.query_params.get('genre')
         if genre is not None:
-            queryset = queryset.filter(genre__slug=genre)
+            return queryset.filter(genre__slug=genre)
 
         return queryset
 
