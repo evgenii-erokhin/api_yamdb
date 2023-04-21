@@ -24,10 +24,22 @@ class GenreViewSet(viewsets.ModelViewSet):
 
 
 class TitleViewSet(viewsets.ModelViewSet):
-    queryset = Title.objects.all()
     serializer_class = TitleSerializer
     filter_backends = (filters.SearchFilter,)
-    search_fields = ('category__slug', 'genre__slug', 'name', 'year')
+    search_fields = ('name', 'year')
+
+    def get_queryset(self):
+        queryset = Title.objects.all()
+
+        category = self.request.query_params.get('category')
+        if category is not None:
+            queryset = queryset.filter(category__slug=category)
+
+        genre = self.request.query_params.get('genre')
+        if genre is not None:
+            queryset.filter(genre__slug=genre)
+
+        return queryset
 
 
 class CommentsViewSet(viewsets.ModelViewSet):
