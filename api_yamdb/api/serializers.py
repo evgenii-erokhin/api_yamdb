@@ -1,7 +1,18 @@
 from django.db.models import Avg
+from django.forms.models import model_to_dict
 from rest_framework import serializers
 
-from reviews.models import Category, Comment, Genre, GenreTitle, Review, Title
+from reviews.models import Category, Comment, Genre, Review, Title
+
+
+class HashableDict(dict):
+    def __hash__(self):
+        return hash(frozenset(self.items()))
+
+
+class SlugInDictOutField(serializers.SlugRelatedField):
+    def to_representation(self, obj):
+        return HashableDict(model_to_dict(obj, fields=('name', 'slug')))
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -12,14 +23,19 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Category
+        model = Genre
         fields = ('name', 'slug')
 
 
 class TitleSerializer(serializers.ModelSerializer):
-    category = CategorySerializer()
+    category = SlugInDictOutField(
+        queryset=Category.objects.all(),
+        slug_field='slug',
+    )
 
-    genre = GenreSerializer(
+    genre = SlugInDictOutField(
+        queryset=Genre.objects.all(),
+        slug_field='slug',
         many=True,
     )
 
@@ -30,42 +46,12 @@ class TitleSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'name', 'year', 'rating', 'description', 'genre', 'category'
         )
+        read_only_fields = ('id', 'rating')
 
     def get_rating(self, obj):
         if obj.reviews.exists():
-            return round(obj.reviews.aggregate(Avg('score')))
+            return round(obj.reviews.aggregate(Avg('score'))['score__avg'])
         return None
-
-    def validate_category(self, data):
-        if not Category.objects.filter(slug=data['category']).exists():
-            raise serializers.ValidationError(
-                {"category": "Такая категория не существует."}
-            )
-        return data
-
-    def validate_genre(self, data):
-        for genre in data['genre']:
-            if not Genre.objects.filter(slug=genre).exists():
-                raise serializers.ValidationError(
-                    {"genre": f"Некорректный жанр: {genre}."}
-                )
-        return data
-
-    def create(self, validated_data):
-        category = validated_data.pop('category')
-        genres = validated_data.pop('genre')
-
-        validated_data['category'] = Category.objects.get(slug=category)
-        title = Title.objects.create(**validated_data)
-
-        for genre in genres:
-            current_genre = Genre.objects.get(slug=genre)
-            GenreTitle.objects.create(
-                genre_id=current_genre,
-                title_id=title,
-            )
-
-        return title
 
 
 class CommentSerializer(serializers.ModelSerializer):
