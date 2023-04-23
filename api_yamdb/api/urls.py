@@ -7,12 +7,12 @@ from api.views import (CategoryViewSet, CommentsViewSet, GenreViewSet,
 router_v1 = routers.DefaultRouter()
 router_v1.register('v1/categories', CategoryViewSet)
 router_v1.register('v1/genres', GenreViewSet)
-router_v1.register('v1/titles', TitleViewSet)
+router_v1.register('v1/titles', TitleViewSet, basename='titles')
 router_v1.register(
     r'v1/titles/(?P<title_id>\d+)/reviews/(?P<review_id>\d+)/comments',
     CommentsViewSet, basename='comments'
 )
-router_v1.register(r'v1/titles/(?P<title_id>\d+)reviews',
+router_v1.register(r'v1/titles/(?P<title_id>\d+)/reviews',
                    ReviewViewSet, basename='reviews')
 
 urlpatterns = [
