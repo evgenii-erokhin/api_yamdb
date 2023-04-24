@@ -1,3 +1,5 @@
+from datetime import datetime as dt
+
 from django.db.models import Avg
 from django.forms.models import model_to_dict
 from rest_framework import serializers
@@ -52,6 +54,13 @@ class TitleSerializer(serializers.ModelSerializer):
         if obj.reviews.exists():
             return round(obj.reviews.aggregate(Avg('score'))['score__avg'])
         return None
+
+    def validate_year(self, year):
+        if year > dt.now().year:
+            raise serializers.ValidationError(
+                'Год выхода произведения не может быть опережать текущий.'
+            )
+        return year
 
 
 class CommentSerializer(serializers.ModelSerializer):
