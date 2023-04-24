@@ -7,7 +7,7 @@ from api.serializers import (CategorySerializer, CommentSerializer,
                              GenreSerializer, ReviewSerializer,
                              TitleSerializer)
 from reviews.models import Category, Genre, Review, Title
-from users.permissions import IsAdmin, ReadOnly
+from users.permissions import IsAdmin, IsAdminOrAuthor, ReadOnly
 
 
 class CategoryViewSet(
