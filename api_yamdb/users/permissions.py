@@ -8,7 +8,7 @@ class IsAdmin(IsAdminUser):
     def has_permission(self, request, view):
         if request.user.id is None:
             return False
-        user = User.objects.get(id=f'{request.user.id}')
+        user = User.objects.get(id=request.user.id)
         return bool(request.user and user.role == 'admin')
 
 
