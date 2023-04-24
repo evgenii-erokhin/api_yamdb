@@ -1,4 +1,5 @@
 from rest_framework.permissions import IsAdminUser
+
 from .models import User
 
 

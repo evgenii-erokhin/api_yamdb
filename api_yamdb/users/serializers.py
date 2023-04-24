@@ -1,11 +1,11 @@
-from rest_framework import serializers
-from .models import User
-from django.core.mail import send_mail
 import uuid
+
+from django.core.mail import send_mail
 from django.db import IntegrityError
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework import serializers
 from rest_framework_simplejwt.tokens import AccessToken
-from django.shortcuts import get_object_or_404
+
+from .models import User
 
 
 class SignUpSerializer(serializers.ModelSerializer):
