@@ -1,11 +1,11 @@
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, viewsets
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from api.serializers import (CategorySerializer, CommentSerializer,
                              GenreSerializer, ReviewSerializer,
                              TitleSerializer)
+from users.permissions import IsAuthorOrModer, IsAdmin, ReadOnly
 from reviews.models import Category, Genre, Review, Title, User
 
 
@@ -44,7 +44,7 @@ class TitleViewSet(viewsets.ModelViewSet):
 
 class CommentsViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsAuthorOrModer | IsAdmin | ReadOnly,)
 
     def get_queryset(self):
         review_id = self.kwargs.get('review_id')
@@ -59,7 +59,7 @@ class CommentsViewSet(viewsets.ModelViewSet):
 
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsAuthorOrModer | IsAdmin | ReadOnly, )
 
     def get_queryset(self):
         title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
@@ -67,5 +67,5 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
-        user = User.objects.get(id=f'{self.request.user.id}')
+        user = User.objects.get(id=self.request.user.id)
         serializer.save(author=user, title=title)
