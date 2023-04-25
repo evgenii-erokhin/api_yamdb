@@ -118,6 +118,7 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.'
         'JWTStatelessUserAuthentication',
     ),
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.AllowAny', ),
     'PAGE_SIZE': 5,
 }
 
