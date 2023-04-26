@@ -1,8 +1,8 @@
 from django.urls import include, path
 from rest_framework import routers
 
-from .views import (SignUpViewSet, TokenViewSet,
-                    UsersListViewSet, AdminViewSet, ProfileViewSet)
+from .views import (AdminViewSet, ProfileViewSet, SignUpViewSet, TokenViewSet,
+                    UsersListViewSet)
 
 v1_router = routers.DefaultRouter()
 v1_router.register('auth/signup', SignUpViewSet)

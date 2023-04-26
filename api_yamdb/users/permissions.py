@@ -1,6 +1,6 @@
-from rest_framework.permissions import IsAdminUser
 from rest_framework.permissions import (SAFE_METHODS, BasePermission,
                                         IsAdminUser)
+
 from .models import User
 
 
@@ -34,6 +34,4 @@ class IsAuthorOrModer(BasePermission):
         if request.user.id is None:
             return False
         user = User.objects.get(id=request.user.id)
-        print(user.role, user.id, obj.author.id)
         return bool(user.role == 'moderator' or user == obj.author)
- 

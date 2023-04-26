@@ -1,14 +1,10 @@
-from rest_framework import viewsets, mixins
-from .models import User
-from .serializers import (SignUpSerializer, TokenSerializer,
-                          UsersListSerializer, AdminSerializer,
-                          ProfileSerializer)
+from rest_framework import filters, mixins, viewsets
 from rest_framework.pagination import PageNumberPagination
 
+from .models import User
 from .permissions import IsAdmin
-from django.shortcuts import get_object_or_404
-from rest_framework import filters
-from rest_framework.views import Response
+from .serializers import (AdminSerializer, ProfileSerializer, SignUpSerializer,
+                          TokenSerializer, UsersListSerializer)
 
 
 class SignUpViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
