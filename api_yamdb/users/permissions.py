@@ -1,10 +1,9 @@
-from rest_framework.permissions import (SAFE_METHODS, BasePermission,
-                                        IsAdminUser)
+from rest_framework.permissions import SAFE_METHODS, BasePermission
 
 from .models import User
 
 
-class IsAdmin(IsAdminUser):
+class IsAdmin(BasePermission):
     def has_permission(self, request, view):
         if request.user.id is None:
             return False
@@ -16,6 +15,20 @@ class IsAdmin(IsAdminUser):
             return False
         user = User.objects.get(id=request.user.id)
         return bool(request.user and user.role == 'admin')
+
+
+class IsModerator(BasePermission):
+    def has_permission(self, request, view):
+        if request.user.id is None:
+            return False
+        user = User.objects.get(id=request.user.id)
+        return bool(request.user and user.role == 'moderator')
+
+    def has_object_permission(self, request, view, obj):
+        if request.user.id is None:
+            return False
+        user = User.objects.get(id=request.user.id)
+        return bool(request.user and user.role == 'moderator')
 
 
 class ReadOnly(BasePermission):
@@ -26,7 +39,7 @@ class ReadOnly(BasePermission):
         return bool(request.method in SAFE_METHODS)
 
 
-class IsAuthorOrModer(BasePermission):
+class IsAuthor(BasePermission):
     def has_permission(self, request, view):
         return bool(request.user.id is not None)
 
@@ -34,4 +47,4 @@ class IsAuthorOrModer(BasePermission):
         if request.user.id is None:
             return False
         user = User.objects.get(id=request.user.id)
-        return bool(user.role == 'moderator' or user == obj.author)
+        return bool(user == obj.author)
