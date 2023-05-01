@@ -107,8 +107,8 @@ class ProfileSerializer(serializers.ModelSerializer):
     username = serializers.RegexField(regex=r'^[\w.@+-]+$', required=True,
                                       max_length=150)
     email = serializers.EmailField(required=True, max_length=254)
-    # first_name = serializers.CharField(max_length=150)
-    # last_name = serializers.CharField(max_length=150)
+    first_name = serializers.CharField(max_length=150, allow_blank=True)
+    last_name = serializers.CharField(max_length=150, allow_blank=True)
     bio = serializers.CharField()
 
     class Meta:
@@ -122,8 +122,8 @@ class AdminSerializer(serializers.ModelSerializer):
     username = serializers.RegexField(regex=r'^[\w.@+-]+$', required=True,
                                       max_length=150)
     email = serializers.EmailField(required=True, max_length=254)
-    first_name = serializers.CharField(max_length=150)
-    last_name = serializers.CharField(max_length=150)
+    first_name = serializers.CharField(max_length=150, allow_blank=True)
+    last_name = serializers.CharField(max_length=150, allow_blank=True)
     bio = serializers.CharField()
 
     class Meta:
