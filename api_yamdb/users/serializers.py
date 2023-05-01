@@ -11,7 +11,7 @@ from .validators import CustomValidation
 ROLES = [
     User.Role.ADMIN.value,
     User.Role.MODERATOR.value,
-    User.Role.USER.value
+    User.Role.USER.value,
 ]
 
 
