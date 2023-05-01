@@ -39,6 +39,7 @@ class UsersListViewSet(mixins.ListModelMixin,
 
 
 class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
     permission_classes = [IsAdmin | IsSuperUser]
     pagination_class = None
     lookup_field = 'username'
@@ -47,16 +48,15 @@ class UserViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         user = get_object_or_404(User, id=self.request.user.id)
 
-        if user.role == 'admin':
+        if (user.role == 'admin') or user.is_superuser:
             return AdminSerializer
         return ProfileSerializer
 
-    @action(detail=True, methods=['get'],
-            permission_classes=[IsAdmin | IsSuperUser])
-    def get_queryset(self):
-        if len(self.kwargs) > 0:
-            return User.objects.filter(username=self.kwargs['username'])
-        return get_object_or_404(User, id=self.request.user.id)
+    def get_object(self):
+        queryset = self.filter_queryset(self.get_queryset())
+        obj = queryset.get(username=self.kwargs.get('username'))
+        self.check_object_permissions(self.request, obj)
+        return obj
 
     @action(detail=True, methods=['patch'],
             permission_classes=[IsAdmin | IsSuperUser],

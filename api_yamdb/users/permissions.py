@@ -14,7 +14,7 @@ class IsSuperUser(BasePermission):
         if request.user.id is None:
             return False
         user = User.objects.get(id=request.user.id)
-        return bool(request.user and user.role == 'admin')
+        return bool(request.user and user.is_superuser)
 
 
 class IsAdmin(BasePermission):

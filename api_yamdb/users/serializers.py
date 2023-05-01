@@ -132,10 +132,12 @@ class AdminSerializer(serializers.ModelSerializer):
         model = User
 
     def validate(self, attrs):
-        if attrs.get('role') in ROLES:
-            return attrs
-        raise CustomValidation(
-            detail='"You do not have permission to perform this action."',
-            field='role',
-            status_code=status.HTTP_400_BAD_REQUEST
-        )
+        if 'role' in attrs.keys():
+            if attrs.get('role') in ROLES:
+                return attrs
+            raise CustomValidation(
+                detail='You do not have permission to perform this action.',
+                field='role',
+                status_code=status.HTTP_400_BAD_REQUEST
+            )
+        return attrs
