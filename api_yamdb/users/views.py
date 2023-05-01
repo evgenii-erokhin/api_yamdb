@@ -46,7 +46,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         user = get_object_or_404(User, id=self.request.user.id)
-        print(user.role)
+
         if user.role == 'admin':
             return AdminSerializer
         return ProfileSerializer
