@@ -95,6 +95,13 @@ class UsersListSerializer(serializers.ModelSerializer):
                   'last_name', 'bio', 'role')
         model = User
 
+    def validate(self, attrs):
+        if User.objects.filter(username=attrs['username']).exists():
+            raise serializers.ValidationError('Username already in use')
+        if User.objects.filter(email=attrs['email']).exists():
+            raise serializers.ValidationError('Email already in use')
+        return attrs
+
 
 class ProfileSerializer(serializers.ModelSerializer):
     username = serializers.RegexField(regex=r'^[\w.@+-]+$', required=True,
