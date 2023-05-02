@@ -6,7 +6,6 @@ from users.models import User
 
 
 class Category(models.Model):
-    '''Модель категории'''
     name = models.CharField(
         'Название категории',
         max_length=256,
@@ -14,7 +13,7 @@ class Category(models.Model):
     )
 
     slug = models.SlugField(
-        'Слаг категори',
+        'Слаг категории',
         max_length=50,
         unique=True,
     )
@@ -26,7 +25,6 @@ class Category(models.Model):
 
 
 class Genre(models.Model):
-    '''Модель жанра'''
     name = models.CharField(
         'Название жанра',
         max_length=256,
@@ -46,7 +44,6 @@ class Genre(models.Model):
 
 
 class Title(models.Model):
-    '''Модель произведения'''
     name = models.CharField(
         'Название произведения',
         max_length=256,
@@ -79,7 +76,6 @@ class Title(models.Model):
 
 
 class GenreTitle(models.Model):
-    '''Модель для связи жанра и произведения'''
     title = models.ForeignKey(
         Title,
         on_delete=models.CASCADE,
@@ -100,7 +96,7 @@ class GenreTitle(models.Model):
 
 
 class Review(models.Model):
-    '''Модель отзыва'''
+    '''Модель отзывов'''
     author = models.ForeignKey(User,
                                on_delete=models.CASCADE,
                                verbose_name='Автор отзыва')
@@ -136,7 +132,7 @@ class Review(models.Model):
 
 
 class Comment(models.Model):
-    '''Модель комментария'''
+    '''Модель комментариев'''
     author = models.ForeignKey(User,
                                on_delete=models.CASCADE,
                                verbose_name='Автор комментария')
