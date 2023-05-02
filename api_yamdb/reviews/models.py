@@ -14,7 +14,7 @@ class Category(models.Model):
     )
 
     slug = models.SlugField(
-        'Слаг категори',
+        'Слаг категории',
         max_length=50,
         unique=True,
     )
