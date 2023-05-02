@@ -5,7 +5,6 @@ from rest_framework import filters, mixins, viewsets
 from api.serializers import (CategorySerializer, CommentSerializer,
                              GenreSerializer, ReviewSerializer,
                              TitleSerializer)
-
 from reviews.models import Category, Genre, Review, Title, User
 from users.permissions import IsAdmin, IsAuthor, IsModerator, ReadOnly
 

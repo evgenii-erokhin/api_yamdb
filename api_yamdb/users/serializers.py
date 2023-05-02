@@ -45,7 +45,6 @@ class SignUpSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         confirmation_code = uuid.uuid4().hex
         validated_data['confirmation_code'] = confirmation_code
-        user = User.objects.create(**validated_data)
         send_mail(
             'Confirmation code',
             f'Ваш код подтверждения: {confirmation_code}',
@@ -53,7 +52,7 @@ class SignUpSerializer(serializers.ModelSerializer):
             [validated_data.get('email')],
             fail_silently=False,
         )
-        return user
+        return User.objects.create(**validated_data)
 
 
 class TokenSerializer(serializers.Serializer):
