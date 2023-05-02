@@ -17,3 +17,10 @@ class User(AbstractUser):
     )
     bio = models.TextField(max_length=500, blank=True)
     confirmation_code = models.CharField(max_length=100, blank=True)
+    email = models.EmailField(
+        verbose_name='email address',
+        unique=True,
+        blank=False,
+        null=False,
+        max_length=254,
+    )
