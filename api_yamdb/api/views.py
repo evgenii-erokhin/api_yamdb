@@ -5,7 +5,6 @@ from rest_framework import filters, mixins, viewsets
 from api.serializers import (CategorySerializer, CommentSerializer,
                              GenreSerializer, ReviewSerializer,
                              TitleSerializer)
-
 from reviews.models import Category, Genre, Review, Title, User
 from users.permissions import IsAdmin, IsAuthor, IsModerator, ReadOnly
 
@@ -62,7 +61,6 @@ class CommentsViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
     permission_classes = (IsAuthor | IsModerator | IsAdmin | ReadOnly,)
 
-
     def get_queryset(self):
         review_id = self.kwargs.get('review_id')
         review = get_object_or_404(Review, id=review_id)
@@ -77,7 +75,6 @@ class CommentsViewSet(viewsets.ModelViewSet):
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
     permission_classes = (IsAuthor | IsModerator | IsAdmin | ReadOnly, )
-
 
     def get_queryset(self):
         title = get_object_or_404(Title, id=self.kwargs.get('title_id'))

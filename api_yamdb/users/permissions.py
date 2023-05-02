@@ -3,7 +3,6 @@ from rest_framework.permissions import SAFE_METHODS, BasePermission
 from .models import User
 
 
-
 class IsSuperUser(BasePermission):
     def has_permission(self, request, view):
         if request.user.id is None:
@@ -77,4 +76,3 @@ class IsAuthor(BasePermission):
             return False
         user = User.objects.get(id=request.user.id)
         return bool(user == obj.author)
-
