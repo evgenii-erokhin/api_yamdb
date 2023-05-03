@@ -1,47 +1,29 @@
-from datetime import datetime as dt
-
-from django.db.models import Avg
-from django.forms.models import model_to_dict
 from rest_framework import serializers
 
 from reviews.models import Category, Comment, Genre, Review, Title
 
 
-class HashableDict(dict):
-    def __hash__(self):
-        return hash(frozenset(self.items()))
-
-
-class SlugInDictOutField(serializers.SlugRelatedField):
-    def to_representation(self, obj):
-        return HashableDict(model_to_dict(obj, fields=('name', 'slug')))
-
-
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ('name', 'slug')
+        exclude = ('id',)
 
 
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre
-        fields = ('name', 'slug')
+        exclude = ('id',)
 
 
-class TitleSerializer(serializers.ModelSerializer):
-    category = SlugInDictOutField(
-        queryset=Category.objects.all(),
-        slug_field='slug',
-    )
-
-    genre = SlugInDictOutField(
-        queryset=Genre.objects.all(),
-        slug_field='slug',
+class TitleReadSerializer(serializers.ModelSerializer):
+    category = CategorySerializer()
+    genre = GenreSerializer(
         many=True,
     )
 
-    rating = serializers.SerializerMethodField()
+    rating = serializers.IntegerField(
+        read_only=True,
+    )
 
     class Meta:
         model = Title
@@ -50,17 +32,24 @@ class TitleSerializer(serializers.ModelSerializer):
         )
         read_only_fields = ('id', 'rating')
 
-    def get_rating(self, obj):
-        if obj.reviews.exists():
-            return round(obj.reviews.aggregate(Avg('score'))['score__avg'])
-        return None
 
-    def validate_year(self, year):
-        if year > dt.now().year:
-            raise serializers.ValidationError(
-                'Год выхода произведения не может быть опережать текущий.'
-            )
-        return year
+class TitleWriteSerializer(serializers.ModelSerializer):
+    category = serializers.SlugRelatedField(
+        queryset=Category.objects.all(),
+        slug_field='slug',
+    )
+    genre = serializers.SlugRelatedField(
+        queryset=Genre.objects.all(),
+        slug_field='slug',
+        many=True,
+    )
+
+    class Meta:
+        model = Title
+        fields = (
+            'id', 'name', 'year', 'description', 'genre', 'category'
+        )
+        read_only_fields = ('id',)
 
 
 class CommentSerializer(serializers.ModelSerializer):
