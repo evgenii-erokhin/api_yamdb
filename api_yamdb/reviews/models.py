@@ -126,6 +126,7 @@ class Review(models.Model):
                                     auto_now_add=True)
 
     class Meta:
+        ordering = ('-pub_date',)
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
         default_related_name = 'reviews'
@@ -152,6 +153,7 @@ class Comment(models.Model):
                                     auto_now_add=True)
 
     class Meta:
+        ordering = ('-pub_date',)
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
         default_related_name = 'comments'
