@@ -116,7 +116,7 @@ REST_FRAMEWORK = {
         'rest_framework.pagination.LimitOffsetPagination',
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.'
-        'JWTStatelessUserAuthentication',
+        'JWTAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.AllowAny', ),
     'PAGE_SIZE': 5,
@@ -132,3 +132,11 @@ AUTH_USER_MODEL = 'users.User'
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
+
+# User's roles
+ADMIN = 'admin'
+MODERATOR = 'moderator'
+USER = 'user'
+
+# Admin email
+ADMIN_EMAIL = 'example@ex.com'
