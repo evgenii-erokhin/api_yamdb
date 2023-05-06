@@ -1,6 +1,5 @@
 from http import HTTPStatus
 
-from django.shortcuts import get_object_or_404
 from rest_framework import filters, mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
@@ -46,9 +45,8 @@ class UserViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'patch', 'delete']
 
     def get_serializer_class(self):
-        user = get_object_or_404(User, id=self.request.user.id)
-
-        if (user.role == 'admin') or user.is_superuser:
+        if ((self.request.user.role == 'admin')
+                or self.request.user.is_superuser):
             return AdminSerializer
         return ProfileSerializer
 
@@ -68,8 +66,7 @@ class UserViewSet(viewsets.ModelViewSet):
             permission_classes=[IsAdmin | IsModerator | IsUser | IsSuperUser],
             url_path='me')
     def me(self, request):
-        user = get_object_or_404(User, id=request.user.id)
-        serializer = ProfileSerializer(user)
+        serializer = ProfileSerializer(request.user)
         return Response(serializer.data)
 
     @action(detail=True, methods=['patch'],
@@ -77,6 +74,5 @@ class UserViewSet(viewsets.ModelViewSet):
             url_path='me',
             serializer_class=ProfileSerializer)
     def patch(self, request, *args, **kwargs):
-        self.kwargs['username'] = (get_object_or_404(
-            User, id=self.request.user.id)).username
+        self.kwargs['username'] = request.user.username
         return self.partial_update(request, *args, **kwargs)

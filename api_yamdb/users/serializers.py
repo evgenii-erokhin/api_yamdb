@@ -7,6 +7,7 @@ from rest_framework_simplejwt.tokens import AccessToken
 
 from .models import User
 from .validators import CustomValidation
+from api_yamdb.settings import ADMIN_EMAIL
 
 ROLES = [
     User.Role.ADMIN.value,
@@ -25,7 +26,7 @@ class SignUpSerializer(serializers.ModelSerializer):
         model = User
 
     def validate(self, attrs):
-        if attrs['username'] == 'me':
+        if attrs['username'].lower() == 'me':
             raise serializers.ValidationError('Username already in use')
 
         if User.objects.filter(
@@ -48,7 +49,7 @@ class SignUpSerializer(serializers.ModelSerializer):
         send_mail(
             'Confirmation code',
             f'Ваш код подтверждения: {confirmation_code}',
-            'from@example.com',
+            ADMIN_EMAIL,
             [validated_data.get('email')],
             fail_silently=False,
         )
@@ -117,18 +118,13 @@ class ProfileSerializer(serializers.ModelSerializer):
         read_only_fields = ('role',)
 
 
-class AdminSerializer(serializers.ModelSerializer):
-    username = serializers.RegexField(regex=r'^[\w.@+-]+$', required=True,
-                                      max_length=150)
-    email = serializers.EmailField(required=True, max_length=254)
-    first_name = serializers.CharField(max_length=150, allow_blank=True)
-    last_name = serializers.CharField(max_length=150, allow_blank=True)
-    bio = serializers.CharField()
+class AdminSerializer(ProfileSerializer):
 
     class Meta:
         fields = ('username', 'email', 'first_name',
                   'last_name', 'bio', 'role')
         model = User
+        read_only_fields = None
 
     def validate(self, attrs):
         if 'role' in attrs.keys():

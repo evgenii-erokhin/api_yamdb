@@ -1,69 +1,38 @@
 from rest_framework.permissions import SAFE_METHODS, BasePermission
 
-from .models import User
+from api_yamdb.settings import ADMIN, MODERATOR, USER
 
 
 class IsSuperUser(BasePermission):
     def has_permission(self, request, view):
         if request.user.id is None:
             return False
-        user = User.objects.get(id=request.user.id)
-        return bool(request.user and user.is_superuser)
-
-    def has_object_permission(self, request, view, obj):
-        if request.user.id is None:
-            return False
-        user = User.objects.get(id=request.user.id)
-        return bool(request.user and user.is_superuser)
+        return bool(request.user and request.user.is_superuser)
 
 
 class IsAdmin(BasePermission):
     def has_permission(self, request, view):
         if request.user.id is None:
             return False
-        user = User.objects.get(id=request.user.id)
-        return bool(request.user and user.role == 'admin')
-
-    def has_object_permission(self, request, view, obj):
-        if request.user.id is None:
-            return False
-        user = User.objects.get(id=request.user.id)
-        return bool(request.user and user.role == 'admin')
+        return bool(request.user and request.user.role == ADMIN)
 
 
 class IsModerator(BasePermission):
     def has_permission(self, request, view):
         if request.user.id is None:
             return False
-        user = User.objects.get(id=request.user.id)
-        return bool(request.user and user.role == 'moderator')
-
-    def has_object_permission(self, request, view, obj):
-        if request.user.id is None:
-            return False
-        user = User.objects.get(id=request.user.id)
-        return bool(request.user and user.role == 'moderator')
+        return bool(request.user and request.user.role == MODERATOR)
 
 
 class IsUser(BasePermission):
     def has_permission(self, request, view):
         if request.user.id is None:
             return False
-        user = User.objects.get(id=request.user.id)
-        return bool(request.user and user.role == 'user')
-
-    def has_object_permission(self, request, view, obj):
-        if request.user.id is None:
-            return False
-        user = User.objects.get(id=request.user.id)
-        return bool(request.user and user.role == 'user')
+        return bool(request.user and request.user.role == USER)
 
 
 class ReadOnly(BasePermission):
     def has_permission(self, request, view):
-        return bool(request.method in SAFE_METHODS)
-
-    def has_object_permission(self, request, view, obj):
         return bool(request.method in SAFE_METHODS)
 
 
@@ -74,5 +43,4 @@ class IsAuthor(BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.user.id is None:
             return False
-        user = User.objects.get(id=request.user.id)
-        return bool(user == obj.author)
+        return bool(request.user == obj.author)
