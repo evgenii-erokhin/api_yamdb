@@ -7,7 +7,7 @@ from api.filters import TitleFilter
 from api.serializers import (CategorySerializer, CommentSerializer,
                              GenreSerializer, ReviewSerializer,
                              TitleReadSerializer, TitleWriteSerializer)
-from reviews.models import Category, Genre, Review, Title, User
+from reviews.models import Category, Genre, Review, Title
 from users.permissions import IsAdmin, IsAuthor, IsModerator, ReadOnly
 
 
@@ -60,13 +60,12 @@ class CommentsViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         review = get_object_or_404(Review, id=self.kwargs.get('review_id'))
-        user = User.objects.get(id=f'{self.request.user.id}')
-        serializer.save(author=user, review=review)
+        serializer.save(author=self.request.user, review=review)
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
-    permission_classes = (IsAuthor | IsModerator | IsAdmin | ReadOnly, )
+    permission_classes = (IsAuthor | IsModerator | IsAdmin | ReadOnly,)
 
     def get_queryset(self):
         title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
@@ -74,5 +73,4 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
-        user = User.objects.get(id=self.request.user.id)
-        serializer.save(author=user, title=title)
+        serializer.save(author=self.request.user, title=title)
