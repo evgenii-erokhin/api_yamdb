@@ -2,6 +2,7 @@ from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
+from reviews.validators import year_validator
 from users.models import User
 
 
@@ -52,8 +53,9 @@ class Title(models.Model):
         max_length=256,
     )
 
-    year = models.IntegerField(
+    year = models.PositiveSmallIntegerField(
         'Год выпуска',
+        validators=[year_validator],
     )
 
     description = models.TextField(
@@ -124,6 +126,7 @@ class Review(models.Model):
                                     auto_now_add=True)
 
     class Meta:
+        ordering = ('-pub_date',)
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
         default_related_name = 'reviews'
@@ -150,6 +153,7 @@ class Comment(models.Model):
                                     auto_now_add=True)
 
     class Meta:
+        ordering = ('-pub_date',)
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
         default_related_name = 'comments'
