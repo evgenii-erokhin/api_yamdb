@@ -9,7 +9,7 @@ from api.serializers import (CategorySerializer, CommentSerializer,
                              GenreSerializer, ReviewSerializer,
                              TitleReadSerializer, TitleWriteSerializer)
 from reviews.models import Category, Genre, Review, Title
-from users.permissions import IsAdmin, IsAuthor, IsModerator, ReadOnly
+from users.permissions import IsAdmin, IsAuthorOrReadOnly, ReadOnly
 
 
 class CategoryViewSet(CategoryGenreBaseClass):
@@ -38,7 +38,7 @@ class TitleViewSet(viewsets.ModelViewSet):
 
 class CommentsViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
-    permission_classes = (IsAuthor | IsModerator | IsAdmin | ReadOnly,)
+    permission_classes = (IsAuthorOrReadOnly,)
 
     def get_queryset(self):
         review_id = self.kwargs.get('review_id')
@@ -52,7 +52,7 @@ class CommentsViewSet(viewsets.ModelViewSet):
 
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
-    permission_classes = (IsAuthor | IsModerator | IsAdmin | ReadOnly,)
+    permission_classes = (IsAuthorOrReadOnly,)
 
     def get_queryset(self):
         title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
